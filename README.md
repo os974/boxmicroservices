@@ -1,173 +1,350 @@
-# Simplon Projet 2 – Toolbox Microservice
+# Projet 2 --- Orchestration, Sécurité et Livraison Continue
 
-![CI Status](https://github.com/nicolastchenio/simplon_projet2_toolbox_microService/actions/workflows/ci.yml/badge.svg)
-![Coverage](https://raw.githubusercontent.com/nicolastchenio/simplon_projet2_toolbox_microService/main/coverage.svg)
-![Python](https://img.shields.io/badge/python-3.11-blue)
-![Lint](https://img.shields.io/badge/lint-ruff-purple)
-![License](https://img.shields.io/badge/license-MIT-green)
+Ce projet transforme un simple script Python en une **architecture
+micro‑services complète**, orchestrée avec Docker et automatisée via
+GitHub Actions.
 
-## Overview
+L'objectif est de construire une application composée de plusieurs
+services indépendants capables de communiquer entre eux, de persister
+les données et d'être déployés automatiquement.
 
-**Python Toolbox Microservice** est une architecture modulaire et distribuée démontrant la mise en place d'un système micro-services complet, sécurisé et orchestré. Le projet se compose d'une API de calcul mathématique et d'une interface utilisateur interactive, le tout géré au sein d'un monorepo.
+------------------------------------------------------------------------
 
-### Points clés :
-- **Architecture Monorepo** gérée avec `uv` pour une gestion efficace des dépendances.
-- **Backend API** performant avec FastAPI, supportant les opérations CRUD.
-- **Frontend Interactif** avec Streamlit pour une manipulation aisée des données.
-- **Persistance des données** : Utilisation de PostgreSQL en production avec un fallback automatique vers SQLite pour le développement local.
-- **Conteneurisation** : Dockerisation complète des services pour un déploiement reproductible.
-- **CI/CD & Sécurité** : Pipeline automatisée avec tests, linting (Ruff), scan de secrets (Gitleaks) et déploiement Docker Hub.
+# Objectifs du Projet
 
----
+Ce projet vise à maîtriser plusieurs concepts essentiels du
+développement moderne :
 
-## Project Structure
+-   Orchestration de services avec Docker Compose
+-   Architecture micro‑services
+-   Persistance des données avec PostgreSQL
+-   Gestion sécurisée des variables d'environnement
+-   Détection des fuites de secrets dans Git
+-   Intégration Continue (CI)
+-   Livraison Continue (CD)
+-   Publication d'images Docker sur DockerHub
 
-```plaintext
-.
-├── .github/                    
-│   ├── workflows/
-│   │   ├── ci.yml             # Linting, Tests, Gitleaks
-│   │   ├── cD.yml             # Build & Push DockerHub
-│   │   └── docs.yml           # Documentation Sphinx
-│   └── CODE_OF_CONDUCT.md
-│   └── CONTRIBUTING.md          
-├── app_api/                   # Service Backend (FastAPI)
-│   ├── maths/                 # Logique métier mathématique
-│   ├── models/                # Modèles de données (Pydantic/SQLAlchemy)
-│   ├── modules/               # Connexion et CRUD
-│   ├── data/                  # Données statiques (CSV)
-│   └── main.py                # Point d'entrée de l'API
-├── app_front/                 # Service Frontend (Streamlit)
-│   ├── pages/                 # Pages de saisie et d'affichage
-│   └── main.py                # Point d'entrée du Front
-├── tests/                     # Tests globaux (API et Logique)
-│   ├── conftest.py
-│   ├── test_api.py
-│   ├── test_db.sqlite
-│   └── test_math_csv.py   
-├── docs/                      # Documentation technique (Sphinx)
-├── .dockerignore 
-├── .gitignore 
-├── docker-compose.yml         # Pour le développement (build: .)
-├── docker-compose.prod.yml    # Pour la prod (image: user/repo:tag)
-├── pyproject.toml             # Configuration du Monorepo (uv workspace)
-├── uv.lock                    
-├── README.md
-└── LICENSE
+------------------------------------------------------------------------
+
+# Architecture du Projet
+
+L'application est composée de **trois services principaux** :
+
+  Service    Technologie   Rôle
+  ---------- ------------- -------------------------------------------
+  Frontend   Streamlit     Interface utilisateur
+  API        FastAPI       Traitement des requêtes et logique métier
+  Database   PostgreSQL    Stockage persistant
+
+Chaque service est isolé dans son conteneur Docker.
+
+------------------------------------------------------------------------
+
+# Structure du Dépôt
+
+    .
+    ├── .github/
+    │   ├── workflows/
+    │   │   ├── ci.yml
+    │   │   └── cd.yml
+    │
+    ├── app_front/
+    │   ├── main.py
+    │   ├── pages/
+    │   │   ├── 0_insert.py
+    │   │   └── 1_read.py
+    │   ├── pyproject.toml
+    │   └── Dockerfile
+    │
+    ├── app_api/
+    │   ├── main.py
+    │   ├── Dockerfile
+    │   ├── pyproject.toml
+    │   │
+    │   ├── models/
+    │   │   └── models.py
+    │   │
+    │   ├── modules/
+    │   │   ├── connect.py
+    │   │   └── crud.py
+    │   │
+    │   ├── maths/
+    │   │   └── mon_module.py
+    │   │
+    │   └── data/
+    │       └── moncsv.csv
+    │
+    ├── tests/
+    │   ├── test_api.py
+    │   └── test_math_csv.py
+    │
+    ├── docker-compose.yml
+    ├── docker-compose.prod.yml
+    ├── conftest.py
+    ├── .gitignore
+    ├── .dockerignore
+    └── .env.example
+
+------------------------------------------------------------------------
+
+# Fonctionnalités
+
+## Frontend (Streamlit)
+
+Interface utilisateur avec deux pages :
+
+-   Page 1 --- Saisie de données
+-   Page 2 --- Consultation des données enregistrées
+
+Le frontend communique avec l'API via HTTP.
+
+------------------------------------------------------------------------
+
+## API (FastAPI)
+
+L'API constitue le **cerveau de l'application**.
+
+Routes principales :
+
+POST /data\
+Enregistre des données dans la base.
+
+GET /data\
+Récupère les données stockées.
+
+------------------------------------------------------------------------
+
+## Base de données
+
+La base utilise **PostgreSQL** avec un **volume Docker persistant**.
+
+Cela permet de conserver les données même si les conteneurs sont
+arrêtés.
+
+------------------------------------------------------------------------
+
+# Développement Local
+
+## 1 --- Cloner le projet
+
+``` bash
+git clone https://github.com/os974/AIToolbox.git
+cd AIToolbox
 ```
 
----
+------------------------------------------------------------------------
 
-## Fonctionnalités
+## 2 --- Créer les variables d'environnement
 
-### API Backend (FastAPI)
-L'API expose des points de terminaison pour gérer des opérations mathématiques :
-- **POST `/data/`** : Créer une nouvelle opération (add, sub, square).
-- **GET `/data/`** : Lister toutes les opérations enregistrées.
-- **PUT `/data/{id}`** : Mettre à jour une opération existante.
-- **DELETE `/data/{id}`** : Supprimer une opération.
-- **Documentation Swagger** : Disponible sur `/docs`.
+Créer un fichier `.env` à partir du template :
 
-### Frontend (Streamlit)
-Une interface utilisateur intuitive permettant de :
-- **Insérer** des opérations via un formulaire dédié.
-- **Visualiser** l'historique des calculs sous forme de tableau (Pandas DataFrame).
-
----
-
-## Installation & Utilisation (Local)
-
-### 1. Prérequis
-- Python 3.11
-- `uv` installé (`pip install uv`)
-
-### 2. Clonage et Configuration
-```bash
-git clone https://github.com/nicolastchenio/simplon_projet2_toolbox-microservice.git
-cd simplon_projet2_toolbox-microservice
-uv sync
+``` bash
+cp .env.example .env
 ```
 
-### 3. Lancement des services
-Vous devez lancer l'API et le Front dans deux terminaux séparés :
+Exemple :
 
-**Terminal 1 : API**
-```bash
-uv run uvicorn app_api.main:app --reload
+    POSTGRES_DB=mydb
+    POSTGRES_USER=myuser
+    POSTGRES_PASSWORD=mypassword
+    DATABASE_URL=postgresql://myuser:mypassword@db:5432/mydb
+
+------------------------------------------------------------------------
+
+## 3 --- Lancer les services
+
+``` bash
+docker compose up --build
 ```
 
-- API : http://127.0.0.1:8000
-- Documentation interactive (Swagger) : http://127.0.0.1:8000/docs
+Services accessibles :
 
-**Terminal 2 : Frontend**
-```bash
-cd app_front
-uv run streamlit run main.py
-```
-- Interface Utilisateur : http://localhost:8501
+Frontend\
+http://localhost:8501
 
----
+API\
+http://localhost:8000
 
-## Déploiement avec Docker
+Documentation API\
+http://localhost:8000/docs
 
-Le projet propose deux configurations Docker Compose :
+------------------------------------------------------------------------
 
-### Développement (Build local)
-Utilise les fichiers locaux pour construire les images :
-```bash
-docker-compose up --build
-```
+# Tests
 
-### Production (Images Docker Hub)
-Utilise les images pré-construites sur Docker Hub :
-```bash
-docker-compose -f docker-compose.prod.yml up
-```
-*Note : Assurez-vous d'avoir configuré les variables d'environnement dans un fichier `.env`.*
+Les tests sont réalisés avec **Pytest**.
 
----
+Lancer les tests :
 
-## Tests & Qualité de code
-
-### Exécuter les tests
-```bash
-uv run pytest
+``` bash
+uv run pytest app_api/tests
 ```
 
-### Couverture de code
-```bash
-uv run pytest --cov=app_api --cov-report=term-missing
+Configuration dans `pyproject.toml` :
+
+``` toml
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
 ```
 
-### Linting (Ruff)
-```bash
-uv run ruff check .
+------------------------------------------------------------------------
+
+# Gestion des Secrets
+
+Les informations sensibles ne doivent jamais être versionnées.
+
+Fichiers utilisés :
+
+-   `.env`
+-   `.env.example`
+-   `.dockerignore`
+-   `.gitignore`
+
+Le fichier `.env` est exclu du dépôt Git.
+
+------------------------------------------------------------------------
+
+# Docker Compose
+
+## Environnement de développement
+
+docker-compose.yml construit les images localement.
+
+------------------------------------------------------------------------
+
+## Environnement de production
+
+docker-compose.prod.yml télécharge directement les images depuis
+DockerHub.
+
+Exemple :
+
+    image: username/project:latest
+
+------------------------------------------------------------------------
+
+# Intégration Continue (CI)
+
+Pipeline GitHub Actions :
+
+    .github/workflows/ci.yml
+
+Étapes :
+
+-   installation des dépendances
+-   linting
+-   exécution des tests
+-   scan de sécurité Gitleaks
+
+------------------------------------------------------------------------
+
+# Sécurité --- Scan des Secrets
+
+Un workflow dédié détecte les secrets accidentellement poussés dans Git.
+
+Outil utilisé :
+
+Gitleaks
+
+Si un secret est détecté :
+
+-   la CI échoue
+-   le commit doit être nettoyé
+
+------------------------------------------------------------------------
+
+# Livraison Continue (CD)
+
+Pipeline :
+
+    .github/workflows/cd.yml
+
+Déclenché uniquement si :
+
+-   la CI est réussie
+-   sur la branche `main`
+
+Le workflow :
+
+1.  se connecte à DockerHub
+2.  build les images
+3.  push les images
+
+Tags utilisés :
+
+    latest
+    commit SHA
+
+Exemple :
+
+    username/app-api:latest
+    username/app-api:9d3f2c8
+
+------------------------------------------------------------------------
+
+# Lancer la Version Production
+
+``` bash
+docker compose -f docker-compose.prod.yml up
 ```
 
----
+Les images seront téléchargées automatiquement depuis DockerHub.
 
-## Documentation
+------------------------------------------------------------------------
 
-La documentation technique est générée avec **Sphinx** et déployée via **GitHub Pages**.
-Elle est accessible à l'adresse suivante : [Lien vers la documentation](https://nicolastchenio.github.io/simplon_projet2_toolbox_microService/) (à adapter selon l'URL réelle).
+# Bonnes Pratiques Implémentées
 
-Pour la générer localement :
-```bash
-uv run sphinx-build docs/source public
-```
+-   Architecture microservices
+-   Isolation réseau Docker
+-   Persistance des données
+-   Gestion sécurisée des secrets
+-   Tests automatisés
+-   CI/CD automatisée
+-   Versionnement des images Docker
 
----
+------------------------------------------------------------------------
 
-## CI/CD & Sécurité
+# Améliorations Possibles
 
-- **CI (GitHub Actions)** : Exécute Ruff, Pytest, génère le badge de couverture et scanne les secrets avec **Gitleaks**.
-- **CD (Docker Hub)** : Construit et pousse automatiquement les images `mon-api` et `mon-front` vers Docker Hub après succès de la CI sur la branche `main`.
-- **Docs** : Déploiement automatique sur GitHub Pages.
+-   Authentification utilisateur
+-   Monitoring des services
+-   Logs centralisés
+-   Déploiement cloud
+-   Scalabilité des services
 
----
+------------------------------------------------------------------------
 
-## Contributeurs
-- Nicolas Tchenio
+# Technologies Utilisées
 
-## License
+Python\
+FastAPI\
+Streamlit\
+PostgreSQL\
+Docker\
+Docker Compose\
+GitHub Actions\
+Pytest\
+Gitleaks
+
+------------------------------------------------------------------------
+
+# License
+
 Ce projet est sous licence **MIT**. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+
+------------------------------------------------------------------------
+
+# Auteur
+
+Olivier Schollaert
+
+------------------------------------------------------------------------
+
+Projet réalisé dans le cadre d'un exercice de formation Simplon Dev IA / Data
+Engineering visant à maîtriser :
+
+-   orchestration
+-   microservices
+-   CI/CD
+-   sécurité des pipelines

@@ -20,8 +20,8 @@ dist/
 .pytest_cache/
 .ruff_cache/
 .coverage
-coverage.xml
-coverage.svg
+!coverage.xml
+!coverage.svg
 htmlcov/
 
 # Base de données locale (SQLite)

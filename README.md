@@ -134,8 +134,8 @@ arrêtés.
 ## 1 --- Cloner le projet
 
 ``` bash
-git clone https://github.com/os974/AIToolbox.git
-cd AIToolbox
+git clone https://github.com/os974/boxmicroservices.git
+cd boxmicroservices
 ```
 
 ------------------------------------------------------------------------

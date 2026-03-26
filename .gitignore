@@ -34,3 +34,9 @@ docs/build/
 .vscode/
 .idea/
 *.swp
+
+#Fichiers de projet et documentation
+Projet_1_bases.md
+Projet_2_Orchestration.md
+tutoriel.md
+README copy.md

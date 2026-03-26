@@ -1,4 +1,4 @@
-# Projet 2 --- Orchestration, Sécurité et Livraison Continue
+# Projet 2 --- Orchestration, Sécurité et Livraison continue
 
 ![CI Status](https://github.com/os974/boxmicroservices/actions/workflows/ci.yml/badge.svg)
 ![Coverage](https://raw.githubusercontent.com/os974/boxmicroservices/main/coverage.svg)

@@ -1,5 +1,11 @@
 # Projet 2 --- Orchestration, Sécurité et Livraison Continue
 
+![CI Status](https://github.com/os974/boxmicroservices/actions/workflows/ci.yml/badge.svg)
+![Coverage](https://raw.githubusercontent.com/os974/boxmicroservices/main/coverage.svg)
+![Python](https://img.shields.io/badge/python-3.11-blue)
+![Lint](https://img.shields.io/badge/lint-ruff-purple)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 Ce projet transforme un simple script Python en une **architecture
 micro‑services complète**, orchestrée avec Docker et automatisée via
 GitHub Actions.

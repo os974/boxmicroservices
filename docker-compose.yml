@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - api-db
+
+  api:
+    build:
+      context: ./app_api
+    container_name: fastapi-api
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
+      - POSTGRES_HOST=db
+      - PYTHONPATH=.
+    depends_on:
+      - db
+    networks:
+      - api-db
+      - front-api
+    ports:
+      - "8000:8000"
+
+  front:
+    build:
+      context: ./app_front
+    container_name: streamlit-front
+    environment:
+      - API_HOST=api
+    depends_on:
+      - api
+    networks:
+      - front-api
+    ports:
+      - "8501:8501"
+
+networks:
+  front-api:
+  api-db:
+
+volumes:
+  postgres_data:

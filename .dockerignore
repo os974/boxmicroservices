@@ -1,0 +1,17 @@
+.env
+.venv
+__pycache__
+*.pyc
+app_api/data/
+docs/build/
+.pytest_cache/
+.ruff_cache/
+.git
+.github
+README.md
+LICENSE
+Projet_1_bases.md
+Projet_2_Orchestration.md
+tutoriel.md
+coverage.svg
+coverage.xml

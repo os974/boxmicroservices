@@ -1,0 +1,64 @@
+name: CI
+
+permissions:
+  contents: write
+
+# Déclenchement sur push ou PR sur main, dev, ou feat/*
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - 'feat/**'
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout du code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+            fetch-depth: 0 
+
+      # 2️⃣ Setup uv et Python
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install Python 3.11
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      # 3️⃣ Linting avec Ruff
+      - name: Lint code with Ruff
+        run: uv run ruff check .
+
+      # 4️⃣ Tests unitaires avec pytest et couverture
+      - name: Run tests with pytest
+        run: |
+          uv run pytest --cov-report=xml
+          uv run genbadge coverage -i coverage.xml -o coverage.svg
+
+      - name: Commit coverage badge
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add coverage.svg
+          git commit -m "Update coverage badge" || echo "No changes"
+          git push
+
+      # 5️⃣ Scan de secrets avec Gitleaks
+      - name: Run Gitleaks scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

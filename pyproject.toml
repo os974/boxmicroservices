@@ -1,0 +1,52 @@
+[project]
+name = "simplon-toolbox-monorepo"
+version = "0.1.0"
+description = "Monorepo regroupant l'API et le Front"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+# La racine dépend des membres pour que leurs bibliothèques soient installées
+dependencies = [
+    "app-api",
+    "app-front",
+    "psycopg2-binary>=2.9.11",
+    "python-dotenv>=1.2.2",
+]
+
+[tool.uv.workspace]
+members = ["app_api", "app_front"]
+
+[tool.uv.sources]
+app-api = { workspace = true }
+app-front = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "ruff",
+    "pytest",
+    "pytest-cov",
+    "genbadge[coverage]",
+    "sphinx",
+    "furo",
+    "myst-parser",
+    "httpx",
+    # On ajoute explicitement les librairies majeures au groupe dev de la racine
+    "fastapi",
+    "pandas",
+    "sqlalchemy",
+    "streamlit",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "D"] # Erreurs, Warnings, Pyflakes, Isort, Docstrings
+ignore = ["D100", "D203", "D213"] # On autorise l'absence de docstring en tout début de fichier et on évite les conflits de docstrings
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+# On cible la couverture sur app_api
+addopts = "-v --cov=app_api --cov-report=term-missing"
+pythonpath = ["app_api", "app_front"]

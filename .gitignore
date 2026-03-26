@@ -1,0 +1,36 @@
+# Environnements virtuels
+.venv/
+venv/
+ENV/
+
+# Python cache et build
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+build/
+dist/
+*.egg-info/
+
+# Configuration et secrets
+.env
+!.env.example
+
+# Tests et Couverture
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+coverage.svg
+htmlcov/
+
+# Base de données locale (SQLite)
+app_api/data/*.db
+
+# Documentation Sphinx
+docs/build/
+
+# IDE
+.vscode/
+.idea/
+*.swp

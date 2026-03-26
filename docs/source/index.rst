@@ -1,0 +1,24 @@
+.. Toolbox documentation master file, created by
+   sphinx-quickstart on Sat Mar 14 17:53:46 2026.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Toolbox documentation
+=====================
+
+Add your content using ``reStructuredText`` syntax. See the
+`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
+documentation for details.
+
+
+.. include:: ../../README.md
+   :parser: myst_parser.sphinx_
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Documentation API :
+
+   mon_module
+   api_db
+   models
+

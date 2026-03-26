@@ -1,0 +1,41 @@
+name: CD DockerHub
+
+on:
+  workflow_run:
+    workflows: ["CI"]  # Nom exact du workflow CI
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and Push API image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./app_api         # dossier contenant le Dockerfile de l'API
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/mon-api:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/mon-api:${{ github.sha }}
+
+      - name: Build and Push Front image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./app_front       # dossier contenant le Dockerfile du Front
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/mon-front:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/mon-front:${{ github.sha }}

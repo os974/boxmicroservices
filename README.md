@@ -288,6 +288,18 @@ Exemple :
 
 ------------------------------------------------------------------------
 
+# Documentation
+
+La documentation technique est générée avec **Sphinx** et déployée via **GitHub Pages**.
+Elle est accessible à l'adresse suivante : [Lien vers la documentation](https://os974.github.io/boxmicroservices/).
+
+Pour la générer localement :
+```bash
+uv run sphinx-build docs/source public
+```
+
+------------------------------------------------------------------------
+
 # Bonnes Pratiques Implémentées
 
 -   Architecture microservices

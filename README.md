@@ -155,23 +155,56 @@ Exemple :
     POSTGRES_PASSWORD=mypassword
     DATABASE_URL=postgresql://myuser:mypassword@db:5432/mydb
 
+
+# Gestion des Secrets
+
+Les informations sensibles ne doivent jamais être versionnées.
+
+Fichiers utilisés :
+
+-   `.env`
+-   `.env.example`
+-   `.dockerignore`
+-   `.gitignore`
+
+Le fichier `.env` est exclu du dépôt Git.
+
 ------------------------------------------------------------------------
 
 ## 3 --- Lancer les services
+
+# Docker Compose
+
+## Environnement de développement
+
+docker-compose.yml construit les images localement.
 
 ``` bash
 docker compose up --build
 ```
 
+## Environnement de production
+
+docker-compose.prod.yml télécharge directement les images depuis
+DockerHub.
+
+``` bash
+docker compose -f docker-compose.prod.yml up
+```
+
+Exemple :
+
+    image: username/project:latest
+
 Services accessibles :
 
-Frontend\
+Frontend Streamlit pour les formules mathématiques\
 http://localhost:8501
 
 API\
 http://localhost:8000
 
-Documentation API\
+Documentation Swagger API\
 http://localhost:8000/docs
 
 ------------------------------------------------------------------------
@@ -193,40 +226,6 @@ Configuration dans `pyproject.toml` :
 pythonpath = ["."]
 testpaths = ["tests"]
 ```
-
-------------------------------------------------------------------------
-
-# Gestion des Secrets
-
-Les informations sensibles ne doivent jamais être versionnées.
-
-Fichiers utilisés :
-
--   `.env`
--   `.env.example`
--   `.dockerignore`
--   `.gitignore`
-
-Le fichier `.env` est exclu du dépôt Git.
-
-------------------------------------------------------------------------
-
-# Docker Compose
-
-## Environnement de développement
-
-docker-compose.yml construit les images localement.
-
-------------------------------------------------------------------------
-
-## Environnement de production
-
-docker-compose.prod.yml télécharge directement les images depuis
-DockerHub.
-
-Exemple :
-
-    image: username/project:latest
 
 ------------------------------------------------------------------------
 
@@ -286,16 +285,6 @@ Exemple :
 
     username/app-api:latest
     username/app-api:9d3f2c8
-
-------------------------------------------------------------------------
-
-# Lancer la Version Production
-
-``` bash
-docker compose -f docker-compose.prod.yml up
-```
-
-Les images seront téléchargées automatiquement depuis DockerHub.
 
 ------------------------------------------------------------------------
 

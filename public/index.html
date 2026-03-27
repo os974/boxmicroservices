@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Documentation du module Maths" href="mon_module.html">
         <link rel="prefetch" href="_static/logo_toolbox_microservice.jpg" as="image">
 
-    <!-- Generated with Sphinx 9.0.4 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>Documentation - Toolbox microservice</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
@@ -242,160 +242,330 @@
 <p>Add your content using <code class="docutils literal notranslate"><span class="pre">reStructuredText</span></code> syntax. See the
 <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">reStructuredText</a>
 documentation for details.</p>
-<section id="simplon-projet-2-toolbox-microservice">
-<h2>Simplon Projet 2 – Toolbox Microservice<a class="headerlink" href="#simplon-projet-2-toolbox-microservice" title="Link to this heading">¶</a></h2>
-<p><img alt="CI Status" src="https://github.com/nicolastchenio/simplon_projet2_toolbox_microService/actions/workflows/ci.yml/badge.svg" />
-<img alt="Coverage" src="https://raw.githubusercontent.com/nicolastchenio/simplon_projet2_toolbox_microService/main/coverage.svg" />
+<section id="projet-2-orchestration-securite-et-livraison-continue">
+<h2>Projet 2 — Orchestration, Sécurité et Livraison continue<a class="headerlink" href="#projet-2-orchestration-securite-et-livraison-continue" title="Link to this heading">¶</a></h2>
+<p><img alt="CI Status" src="https://github.com/os974/boxmicroservices/actions/workflows/ci.yml/badge.svg" />
+<img alt="Coverage" src="https://raw.githubusercontent.com/os974/boxmicroservices/main/coverage.svg" />
 <img alt="Python" src="https://img.shields.io/badge/python-3.11-blue" />
 <img alt="Lint" src="https://img.shields.io/badge/lint-ruff-purple" />
 <img alt="License" src="https://img.shields.io/badge/license-MIT-green" /></p>
-<section id="overview">
-<h3>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h3>
-<p><strong>Python Toolbox Microservice</strong> est une évolution du projet initial vers une architecture modulaire et distribuée. Ce projet démontre la mise en place d’une architecture micro-services complète, sécurisée et orchestrée :</p>
+<p>Ce projet transforme un simple script Python en une <strong>architecture
+micro‑services complète</strong>, orchestrée avec Docker et automatisée via
+GitHub Actions.</p>
+<p>L’objectif est de construire une application composée de plusieurs
+services indépendants capables de communiquer entre eux, de persister
+les données et d’être déployés automatiquement.</p>
+</section>
+<hr class="docutils" />
+<section id="objectifs-du-projet">
+<h2>Objectifs du Projet<a class="headerlink" href="#objectifs-du-projet" title="Link to this heading">¶</a></h2>
+<p>Ce projet vise à maîtriser plusieurs concepts essentiels du
+développement moderne :</p>
 <ul class="simple">
-<li><p><strong>Architecture Monorepo</strong> gérée avec <code class="docutils literal notranslate"><span class="pre">uv</span></code>.</p></li>
-<li><p><strong>Backend API</strong> performant avec FastAPI.</p></li>
-<li><p><strong>Frontend Interactif</strong> avec Streamlit.</p></li>
-<li><p><strong>Persistance des données</strong> (PostgreSQL / SQLite).</p></li>
-<li><p><strong>Tests unitaires et d’intégration</strong> avec Pytest.</p></li>
-<li><p><strong>Qualité de code</strong> via Ruff.</p></li>
-<li><p><strong>CI/CD &amp; Sécurité</strong> : Scan de secrets (Gitleaks) et déploiement automatisé.</p></li>
+<li><p>Orchestration de services avec Docker Compose</p></li>
+<li><p>Architecture micro‑services</p></li>
+<li><p>Persistance des données avec PostgreSQL</p></li>
+<li><p>Gestion sécurisée des variables d’environnement</p></li>
+<li><p>Détection des fuites de secrets dans Git</p></li>
+<li><p>Intégration Continue (CI)</p></li>
+<li><p>Livraison Continue (CD)</p></li>
+<li><p>Publication d’images Docker sur DockerHub</p></li>
 </ul>
 </section>
 <hr class="docutils" />
-<section id="project-structure">
-<h3>Project Structure<a class="headerlink" href="#project-structure" title="Link to this heading">¶</a></h3>
-<div class="highlight-plaintext notranslate"><div class="highlight"><pre><span></span>.
-├── .github/                    
+<section id="architecture-du-projet">
+<h2>Architecture du Projet<a class="headerlink" href="#architecture-du-projet" title="Link to this heading">¶</a></h2>
+<p>L’application est composée de <strong>trois services principaux</strong> :</p>
+<p>Service    Technologie   Rôle</p>
+<hr class="docutils" />
+<p>Frontend   Streamlit     Interface utilisateur
+API        FastAPI       Traitement des requêtes et logique métier
+Database   PostgreSQL    Stockage persistant</p>
+<p>Chaque service est isolé dans son conteneur Docker.</p>
+</section>
+<hr class="docutils" />
+<section id="structure-du-depot">
+<h2>Structure du Dépôt<a class="headerlink" href="#structure-du-depot" title="Link to this heading">¶</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.
+├── .github/
 │   ├── workflows/
-│   │   ├── ci.yml             # Linting, Tests, Gitleaks
-│   │   └── docs.yml           # Documentation Sphinx
-│   └── CODE_OF_CONDUCT.md
-│   └── CONTRIBUTING.md          
-├── app_api/                   # Service Backend (FastAPI)
-│   ├── maths/                 # Logique métier mathématique
-│   ├── models/                # Modèles de données (Pydantic/SQLAlchemy)
-│   ├── modules/               # Connexion et CRUD
-│   ├── data/                  # Données statiques (CSV)
-│   └── main.py                # Point d&#39;entrée de l&#39;API
-├── app_front/                 # Service Frontend (Streamlit)
-│   ├── pages/                 # Pages de saisie et d&#39;affichage
-│   └── main.py                # Point d&#39;entrée du Front
-├── tests/                     # Tests globaux (API et Logique)
+│   │   ├── ci.yml
+│   │   └── cd.yml
+│
+├── app_front/
+│   ├── main.py
+│   ├── pages/
+│   │   ├── 0_insert.py
+│   │   └── 1_read.py
+│   ├── pyproject.toml
+│   └── Dockerfile
+│
+├── app_api/
+│   ├── main.py
+│   ├── Dockerfile
+│   ├── pyproject.toml
+│   │
+│   ├── models/
+│   │   └── models.py
+│   │
+│   ├── modules/
+│   │   ├── connect.py
+│   │   └── crud.py
+│   │
+│   ├── maths/
+│   │   └── mon_module.py
+│   │
+│   └── data/
+│       └── moncsv.csv
+│
+├── tests/
 │   ├── test_api.py
-│   └── test_math_csv.py   
-├── docs/                      # Documentation technique (Sphinx)
-├── .dockerignore 
-├── .gitignore 
-├── pyproject.toml             # Configuration du Monorepo (uv workspace)
-├── uv.lock                    
-├── README.md
-└── LICENSE
+│   └── test_math_csv.py
+│
+├── docker-compose.yml
+├── docker-compose.prod.yml
+├── conftest.py
+├── .gitignore
+├── .dockerignore
+└── .env.example
 </pre></div>
 </div>
 </section>
 <hr class="docutils" />
-<section id="installation">
-<h3>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h3>
-<p>Ce projet utilise <strong>uv</strong> pour la gestion des dépendances et de l’espace de travail (workspace).</p>
-<section id="prerequis">
-<h4>1. Prérequis<a class="headerlink" href="#prerequis" title="Link to this heading">¶</a></h4>
-<p>Assurez-vous d’avoir <code class="docutils literal notranslate"><span class="pre">uv</span></code> installé :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>uv
-</pre></div>
-</div>
-</section>
-<section id="cloner-le-depot">
-<h4>2. Cloner le dépôt<a class="headerlink" href="#cloner-le-depot" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/nicolastchenio/simplon_projet2_toolbox-microservice.git
-<span class="nb">cd</span><span class="w"> </span>simplon_projet2_toolbox-microservice
-</pre></div>
-</div>
-</section>
-<section id="synchroniser-l-environnement">
-<h4>3. Synchroniser l’environnement<a class="headerlink" href="#synchroniser-l-environnement" title="Link to this heading">¶</a></h4>
-<p>Depuis la racine du projet :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>sync
-</pre></div>
-</div>
-<p>Cette commande installe les dépendances pour tous les membres de l’espace de travail (<code class="docutils literal notranslate"><span class="pre">app_api</span></code> et <code class="docutils literal notranslate"><span class="pre">app_front</span></code>).</p>
-</section>
-</section>
-<hr class="docutils" />
-<section id="running-the-application-local">
-<h3>Running the Application (Local)<a class="headerlink" href="#running-the-application-local" title="Link to this heading">¶</a></h3>
-<p>Le projet nécessite le lancement de deux services distincts dans deux terminaux différents depuis la racine du projet.</p>
-<section id="terminal-1-backend-api-fastapi">
-<h4>1. Terminal 1 : Backend API (FastAPI)<a class="headerlink" href="#terminal-1-backend-api-fastapi" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Lancer l&#39;API avec rechargement automatique (Hot Reload)</span>
-uv<span class="w"> </span>run<span class="w"> </span>uvicorn<span class="w"> </span>app_api.main:app<span class="w"> </span>--reload
-</pre></div>
-</div>
+<section id="fonctionnalites">
+<h2>Fonctionnalités<a class="headerlink" href="#fonctionnalites" title="Link to this heading">¶</a></h2>
+<section id="frontend-streamlit">
+<h3>Frontend (Streamlit)<a class="headerlink" href="#frontend-streamlit" title="Link to this heading">¶</a></h3>
+<p>Interface utilisateur avec deux pages :</p>
 <ul class="simple">
-<li><p><strong>API</strong> : <a class="reference external" href="http://127.0.0.1:8000">http://127.0.0.1:8000</a></p></li>
-<li><p><strong>Documentation interactive (Swagger)</strong> : <a class="reference external" href="http://127.0.0.1:8000/docs">http://127.0.0.1:8000/docs</a></p></li>
+<li><p>Page 1 — Saisie de données</p></li>
+<li><p>Page 2 — Consultation des données enregistrées</p></li>
+</ul>
+<p>Le frontend communique avec l’API via HTTP.</p>
+</section>
+<hr class="docutils" />
+<section id="api-fastapi">
+<h3>API (FastAPI)<a class="headerlink" href="#api-fastapi" title="Link to this heading">¶</a></h3>
+<p>L’API constitue le <strong>cerveau de l’application</strong>.</p>
+<p>Routes principales :</p>
+<p>POST /data<br />
+Enregistre des données dans la base.</p>
+<p>GET /data<br />
+Récupère les données stockées.</p>
+</section>
+<hr class="docutils" />
+<section id="base-de-donnees">
+<h3>Base de données<a class="headerlink" href="#base-de-donnees" title="Link to this heading">¶</a></h3>
+<p>La base utilise <strong>PostgreSQL</strong> avec un <strong>volume Docker persistant</strong>.</p>
+<p>Cela permet de conserver les données même si les conteneurs sont
+arrêtés.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="developpement-local">
+<h2>Développement Local<a class="headerlink" href="#developpement-local" title="Link to this heading">¶</a></h2>
+<section id="cloner-le-projet">
+<h3>1 — Cloner le projet<a class="headerlink" href="#cloner-le-projet" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/os974/boxmicroservices.git
+<span class="nb">cd</span><span class="w"> </span>boxmicroservices
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="creer-les-variables-d-environnement">
+<h3>2 — Créer les variables d’environnement<a class="headerlink" href="#creer-les-variables-d-environnement" title="Link to this heading">¶</a></h3>
+<p>Créer un fichier <code class="docutils literal notranslate"><span class="pre">.env</span></code> à partir du template :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+</pre></div>
+</div>
+<p>Exemple :</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>POSTGRES_DB=mydb
+POSTGRES_USER=myuser
+POSTGRES_PASSWORD=mypassword
+DATABASE_URL=postgresql://myuser:mypassword@db:5432/mydb
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="lancer-les-services">
+<h3>3 — Lancer les services<a class="headerlink" href="#lancer-les-services" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>--build
+</pre></div>
+</div>
+<p>Services accessibles :</p>
+<p>Frontend<br />
+http://localhost:8501</p>
+<p>API<br />
+http://localhost:8000</p>
+<p>Documentation API<br />
+http://localhost:8000/docs</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="tests">
+<h2>Tests<a class="headerlink" href="#tests" title="Link to this heading">¶</a></h2>
+<p>Les tests sont réalisés avec <strong>Pytest</strong>.</p>
+<p>Lancer les tests :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>app_api/tests
+</pre></div>
+</div>
+<p>Configuration dans <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> :</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.pytest.ini_options]</span>
+<span class="n">pythonpath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;.&quot;</span><span class="p">]</span>
+<span class="n">testpaths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;tests&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="gestion-des-secrets">
+<h2>Gestion des Secrets<a class="headerlink" href="#gestion-des-secrets" title="Link to this heading">¶</a></h2>
+<p>Les informations sensibles ne doivent jamais être versionnées.</p>
+<p>Fichiers utilisés :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.env</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.env.example</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.dockerignore</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.gitignore</span></code></p></li>
+</ul>
+<p>Le fichier <code class="docutils literal notranslate"><span class="pre">.env</span></code> est exclu du dépôt Git.</p>
+</section>
+<hr class="docutils" />
+<section id="docker-compose">
+<h2>Docker Compose<a class="headerlink" href="#docker-compose" title="Link to this heading">¶</a></h2>
+<section id="environnement-de-developpement">
+<h3>Environnement de développement<a class="headerlink" href="#environnement-de-developpement" title="Link to this heading">¶</a></h3>
+<p>docker-compose.yml construit les images localement.</p>
+</section>
+<hr class="docutils" />
+<section id="environnement-de-production">
+<h3>Environnement de production<a class="headerlink" href="#environnement-de-production" title="Link to this heading">¶</a></h3>
+<p>docker-compose.prod.yml télécharge directement les images depuis
+DockerHub.</p>
+<p>Exemple :</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>image: username/project:latest
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="integration-continue-ci">
+<h2>Intégration Continue (CI)<a class="headerlink" href="#integration-continue-ci" title="Link to this heading">¶</a></h2>
+<p>Pipeline GitHub Actions :</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.github/workflows/ci.yml
+</pre></div>
+</div>
+<p>Étapes :</p>
+<ul class="simple">
+<li><p>installation des dépendances</p></li>
+<li><p>linting</p></li>
+<li><p>exécution des tests</p></li>
+<li><p>scan de sécurité Gitleaks</p></li>
 </ul>
 </section>
-<section id="terminal-2-frontend-streamlit">
-<h4>2. Terminal 2 : Frontend (Streamlit)<a class="headerlink" href="#terminal-2-frontend-streamlit" title="Link to this heading">¶</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Se déplacer dans le dossier front et lancer l&#39;interface</span>
-<span class="nb">cd</span><span class="w"> </span>app_front
-uv<span class="w"> </span>run<span class="w"> </span>streamlit<span class="w"> </span>run<span class="w"> </span>main.py
-</pre></div>
-</div>
+<hr class="docutils" />
+<section id="securite-scan-des-secrets">
+<h2>Sécurité — Scan des Secrets<a class="headerlink" href="#securite-scan-des-secrets" title="Link to this heading">¶</a></h2>
+<p>Un workflow dédié détecte les secrets accidentellement poussés dans Git.</p>
+<p>Outil utilisé :</p>
+<p>Gitleaks</p>
+<p>Si un secret est détecté :</p>
 <ul class="simple">
-<li><p><strong>Interface Utilisateur</strong> : <a class="reference external" href="http://localhost:8501">http://localhost:8501</a></p></li>
-</ul>
-</section>
-</section>
-<hr class="docutils" />
-<section id="running-tests">
-<h3>Running Tests<a class="headerlink" href="#running-tests" title="Link to this heading">¶</a></h3>
-<p>Exécutez la suite complète de tests depuis la racine :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>pytest
-</pre></div>
-</div>
-<p>Pour générer un rapport de couverture :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>--cov<span class="o">=</span>app_api<span class="w"> </span>--cov-report<span class="o">=</span>term-missing
-</pre></div>
-</div>
-</section>
-<hr class="docutils" />
-<section id="code-quality">
-<h3>Code Quality<a class="headerlink" href="#code-quality" title="Link to this heading">¶</a></h3>
-<p>Nous utilisons <strong>Ruff</strong> pour le linting et la mise en conformité du code :</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>ruff<span class="w"> </span>check<span class="w"> </span>.
-</pre></div>
-</div>
-</section>
-<hr class="docutils" />
-<section id="continuous-integration-security">
-<h3>Continuous Integration &amp; Security<a class="headerlink" href="#continuous-integration-security" title="Link to this heading">¶</a></h3>
-<p>Le projet intègre une pipeline CI/CD robuste :</p>
-<ul class="simple">
-<li><p><strong>Tests &amp; Linting</strong> : Lancés à chaque commit.</p></li>
-<li><p><strong>Sécurité (Gitleaks)</strong> : Vérification automatique de l’absence de secrets ou clés API dans l’historique Git.</p></li>
-<li><p><strong>Documentation</strong> : Génération automatique de la documentation Sphinx.</p></li>
+<li><p>la CI échoue</p></li>
+<li><p>le commit doit être nettoyé</p></li>
 </ul>
 </section>
 <hr class="docutils" />
-<section id="contributing">
-<h3>Contributing<a class="headerlink" href="#contributing" title="Link to this heading">¶</a></h3>
-<p>Les contributions sont les bienvenues. Veuillez consulter <strong>CONTRIBUTING.md</strong> pour plus de détails.</p>
+<section id="livraison-continue-cd">
+<h2>Livraison Continue (CD)<a class="headerlink" href="#livraison-continue-cd" title="Link to this heading">¶</a></h2>
+<p>Pipeline :</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.github/workflows/cd.yml
+</pre></div>
+</div>
+<p>Déclenché uniquement si :</p>
+<ul class="simple">
+<li><p>la CI est réussie</p></li>
+<li><p>sur la branche <code class="docutils literal notranslate"><span class="pre">main</span></code></p></li>
+</ul>
+<p>Le workflow :</p>
+<ol class="arabic simple">
+<li><p>se connecte à DockerHub</p></li>
+<li><p>build les images</p></li>
+<li><p>push les images</p></li>
+</ol>
+<p>Tags utilisés :</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>latest
+commit SHA
+</pre></div>
+</div>
+<p>Exemple :</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>username/app-api:latest
+username/app-api:9d3f2c8
+</pre></div>
+</div>
 </section>
 <hr class="docutils" />
-<section id="contributors">
-<h3>Contributors<a class="headerlink" href="#contributors" title="Link to this heading">¶</a></h3>
-<p>Projet développé par :</p>
+<section id="lancer-la-version-production">
+<h2>Lancer la Version Production<a class="headerlink" href="#lancer-la-version-production" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker-compose.prod.yml<span class="w"> </span>up
+</pre></div>
+</div>
+<p>Les images seront téléchargées automatiquement depuis DockerHub.</p>
+</section>
+<hr class="docutils" />
+<section id="bonnes-pratiques-implementees">
+<h2>Bonnes Pratiques Implémentées<a class="headerlink" href="#bonnes-pratiques-implementees" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>nicolas tchenio</p></li>
+<li><p>Architecture microservices</p></li>
+<li><p>Isolation réseau Docker</p></li>
+<li><p>Persistance des données</p></li>
+<li><p>Gestion sécurisée des secrets</p></li>
+<li><p>Tests automatisés</p></li>
+<li><p>CI/CD automatisée</p></li>
+<li><p>Versionnement des images Docker</p></li>
 </ul>
+</section>
+<hr class="docutils" />
+<section id="ameliorations-possibles">
+<h2>Améliorations Possibles<a class="headerlink" href="#ameliorations-possibles" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Authentification utilisateur</p></li>
+<li><p>Monitoring des services</p></li>
+<li><p>Logs centralisés</p></li>
+<li><p>Déploiement cloud</p></li>
+<li><p>Scalabilité des services</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="technologies-utilisees">
+<h2>Technologies Utilisées<a class="headerlink" href="#technologies-utilisees" title="Link to this heading">¶</a></h2>
+<p>Python<br />
+FastAPI<br />
+Streamlit<br />
+PostgreSQL<br />
+Docker<br />
+Docker Compose<br />
+GitHub Actions<br />
+Pytest<br />
+Gitleaks</p>
 </section>
 <hr class="docutils" />
 <section id="license">
-<h3>License<a class="headerlink" href="#license" title="Link to this heading">¶</a></h3>
-<p>Ce projet est sous licence <strong>MIT</strong>. Voir le fichier <strong>LICENSE</strong> pour plus de détails.</p>
+<h2>License<a class="headerlink" href="#license" title="Link to this heading">¶</a></h2>
+<p>Ce projet est sous licence <strong>MIT</strong>. Voir le fichier <a class="reference internal" href="#LICENSE"><span class="xref myst">LICENSE</span></a> pour plus de détails.</p>
 </section>
+<hr class="docutils" />
+<section id="auteur">
+<h2>Auteur<a class="headerlink" href="#auteur" title="Link to this heading">¶</a></h2>
+<p>Olivier Schollaert</p>
+<hr class="docutils" />
+<p>Projet réalisé dans le cadre d’un exercice de formation Simplon Dev IA / Data
+Engineering visant à maîtriser :</p>
+<ul class="simple">
+<li><p>orchestration</p></li>
+<li><p>microservices</p></li>
+<li><p>CI/CD</p></li>
+<li><p>sécurité des pipelines</p></li>
+</ul>
 </section>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Documentation API :</span></p>
@@ -463,28 +633,38 @@ uv<span class="w"> </span>run<span class="w"> </span>streamlit<span class="w"> <
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Toolbox documentation</a><ul>
-<li><a class="reference internal" href="#simplon-projet-2-toolbox-microservice">Simplon Projet 2 – Toolbox Microservice</a><ul>
-<li><a class="reference internal" href="#overview">Overview</a></li>
-<li><a class="reference internal" href="#project-structure">Project Structure</a></li>
-<li><a class="reference internal" href="#installation">Installation</a><ul>
-<li><a class="reference internal" href="#prerequis">1. Prérequis</a></li>
-<li><a class="reference internal" href="#cloner-le-depot">2. Cloner le dépôt</a></li>
-<li><a class="reference internal" href="#synchroniser-l-environnement">3. Synchroniser l’environnement</a></li>
+<li><a class="reference internal" href="#projet-2-orchestration-securite-et-livraison-continue">Projet 2 — Orchestration, Sécurité et Livraison continue</a></li>
+<li><a class="reference internal" href="#objectifs-du-projet">Objectifs du Projet</a></li>
+<li><a class="reference internal" href="#architecture-du-projet">Architecture du Projet</a></li>
+<li><a class="reference internal" href="#structure-du-depot">Structure du Dépôt</a></li>
+<li><a class="reference internal" href="#fonctionnalites">Fonctionnalités</a><ul>
+<li><a class="reference internal" href="#frontend-streamlit">Frontend (Streamlit)</a></li>
+<li><a class="reference internal" href="#api-fastapi">API (FastAPI)</a></li>
+<li><a class="reference internal" href="#base-de-donnees">Base de données</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#running-the-application-local">Running the Application (Local)</a><ul>
-<li><a class="reference internal" href="#terminal-1-backend-api-fastapi">1. Terminal 1 : Backend API (FastAPI)</a></li>
-<li><a class="reference internal" href="#terminal-2-frontend-streamlit">2. Terminal 2 : Frontend (Streamlit)</a></li>
+<li><a class="reference internal" href="#developpement-local">Développement Local</a><ul>
+<li><a class="reference internal" href="#cloner-le-projet">1 — Cloner le projet</a></li>
+<li><a class="reference internal" href="#creer-les-variables-d-environnement">2 — Créer les variables d’environnement</a></li>
+<li><a class="reference internal" href="#lancer-les-services">3 — Lancer les services</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#running-tests">Running Tests</a></li>
-<li><a class="reference internal" href="#code-quality">Code Quality</a></li>
-<li><a class="reference internal" href="#continuous-integration-security">Continuous Integration &amp; Security</a></li>
-<li><a class="reference internal" href="#contributing">Contributing</a></li>
-<li><a class="reference internal" href="#contributors">Contributors</a></li>
+<li><a class="reference internal" href="#tests">Tests</a></li>
+<li><a class="reference internal" href="#gestion-des-secrets">Gestion des Secrets</a></li>
+<li><a class="reference internal" href="#docker-compose">Docker Compose</a><ul>
+<li><a class="reference internal" href="#environnement-de-developpement">Environnement de développement</a></li>
+<li><a class="reference internal" href="#environnement-de-production">Environnement de production</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#integration-continue-ci">Intégration Continue (CI)</a></li>
+<li><a class="reference internal" href="#securite-scan-des-secrets">Sécurité — Scan des Secrets</a></li>
+<li><a class="reference internal" href="#livraison-continue-cd">Livraison Continue (CD)</a></li>
+<li><a class="reference internal" href="#lancer-la-version-production">Lancer la Version Production</a></li>
+<li><a class="reference internal" href="#bonnes-pratiques-implementees">Bonnes Pratiques Implémentées</a></li>
+<li><a class="reference internal" href="#ameliorations-possibles">Améliorations Possibles</a></li>
+<li><a class="reference internal" href="#technologies-utilisees">Technologies Utilisées</a></li>
 <li><a class="reference internal" href="#license">License</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#auteur">Auteur</a></li>
 </ul>
 </li>
 </ul>

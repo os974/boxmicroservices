@@ -110,13 +110,29 @@ Le frontend communique avec l'API via HTTP.
 
 L'API constitue le **cerveau de l'application**.
 
-Routes principales :
+Routes principales (versionnées sous `/v1/data/`) :
 
-POST /data\
-Enregistre des données dans la base.
+| Méthode | Endpoint | Description |
+|---|---|---|
+| `POST` | `/v1/data/` | Insérer une opération (body JSON validé par Pydantic) |
+| `GET` | `/v1/data/` | Lister toutes les opérations |
+| `PUT` | `/v1/data/{id}` | Mettre à jour une opération |
+| `DELETE` | `/v1/data/{id}` | Supprimer une opération |
+| `GET` | `/` | Sanity check |
 
-GET /data\
-Récupère les données stockées.
+Le body attendu en POST/PUT :
+
+```json
+{"operation": "add", "a": 1, "b": 2}
+```
+
+`operation` doit être `"add"`, `"sub"` ou `"square"` (validation
+Pydantic via `Literal` — toute autre valeur est rejetée en 422).
+`b` est optionnel pour `square` (opération unaire).
+
+La documentation interactive complète est exposée par FastAPI sur
+[http://localhost:8000/docs](http://localhost:8000/docs) une fois la
+stack lancée.
 
 ------------------------------------------------------------------------
 
@@ -148,13 +164,9 @@ Créer un fichier `.env` à partir du template :
 cp .env.example .env
 ```
 
-Exemple :
-
-    POSTGRES_DB=mydb
-    POSTGRES_USER=myuser
-    POSTGRES_PASSWORD=mypassword
-    DATABASE_URL=postgresql://myuser:mypassword@db:5432/mydb
-
+Le template est opinionné — valeurs par défaut sûres pour le dev local
+(Postgres / `postgres` / `mydb` / réseau Compose). À éditer uniquement
+en prod (et alors utiliser un secret manager, pas un `.env` versionné).
 
 # Gestion des Secrets
 
@@ -162,26 +174,63 @@ Les informations sensibles ne doivent jamais être versionnées.
 
 Fichiers utilisés :
 
--   `.env`
--   `.env.example`
+-   `.env` (local, exclu du repo)
+-   `.env.example` (template versionné)
 -   `.dockerignore`
 -   `.gitignore`
 
-Le fichier `.env` est exclu du dépôt Git.
+Pour détecter une fuite accidentelle, deux filets sont en place :
+**Gitleaks** dans la CI (cf. `.github/workflows/ci.yml`) et un hook
+**pre-commit local** (cf. étape 3 ci-dessous) — il bloque le commit
+avant même le push si un secret est détecté.
 
 ------------------------------------------------------------------------
 
-## 3 --- Lancer les services
+## 3 --- (optionnel) Activer les hooks pre-commit
+
+Pour bénéficier du lint Ruff + scan Gitleaks **avant chaque commit**
+plutôt qu'attendre la CI :
+
+``` bash
+uv tool install pre-commit       # une fois par machine
+pre-commit install               # active les hooks dans ce repo
+```
+
+Skip ponctuel : `git commit --no-verify` (à justifier).
+
+------------------------------------------------------------------------
+
+## 4 --- Lancer les services
 
 # Docker Compose
 
 ## Environnement de développement
 
-docker-compose.yml construit les images localement.
+docker-compose.yml construit les images localement. Au démarrage,
+l'API exécute automatiquement `alembic upgrade head` avant uvicorn
+(cf. `app_api/Dockerfile`) — pas d'étape manuelle de migration.
 
 ``` bash
 docker compose up --build
 ```
+
+### Démarrage hors Docker (rare, dev pur Python)
+
+Si l'on veut lancer l'API directement avec `uvicorn` (sans Docker),
+appliquer **manuellement** les migrations Alembic d'abord — sinon la
+table `operations` n'existe pas et tout POST renvoie 500 :
+
+``` bash
+cd app_api
+uv run alembic upgrade head
+uv run uvicorn main:app --reload
+```
+
+> ⚠️ Piège SQLite : `settings.database_url` vaut par défaut
+> `sqlite:///./local.sqlite` — un chemin **relatif au cwd**. Lancer
+> `alembic` et `uvicorn` depuis le même dossier (`app_api/`), sinon
+> ils pointent sur deux fichiers différents. En Compose (Postgres),
+> ce problème n'existe pas.
 
 ## Environnement de production
 

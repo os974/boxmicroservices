@@ -1,0 +1,48 @@
+# Configuration pre-commit — exécutée localement avant chaque commit.
+#
+# Pourquoi : déplacer à gauche (shift-left) les vérifs qui tournent déjà
+# en CI. Si ruff ou gitleaks détecte un problème, le commit est bloqué
+# AVANT le push — pas besoin d'attendre 2 min de CI pour le découvrir.
+#
+# Installation pour un nouveau clone :
+#   uv tool install pre-commit  (ou pipx install pre-commit)
+#   pre-commit install
+#
+# Skip ponctuel (rare, à justifier) :
+#   git commit --no-verify
+#
+# Mise à jour des versions des hooks :
+#   pre-commit autoupdate
+
+repos:
+  # Lint Python — même config que la CI (cf. pyproject.toml [tool.ruff]).
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.5
+    hooks:
+      - id: ruff
+        # --fix : applique les corrections auto-fixables. Le commit
+        # est bloqué si des changements sont appliqués → on les relit
+        # avant de re-commit, plutôt que de pousser du code modifié
+        # sans s'en rendre compte.
+        args: [--fix]
+
+  # Scan de secrets — miroir du job Gitleaks de la CI. Bloque le commit
+  # si un token / clé / mot de passe est détecté dans le diff.
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+
+  # Hygiène générique des fichiers texte (finitions de ligne, gros
+  # fichiers oubliés, conflits non résolus, etc.). Très peu coûteux,
+  # évite des PRs "fix typo" inutiles.
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: check-yaml
+      - id: check-toml

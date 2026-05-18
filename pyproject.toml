@@ -40,6 +40,10 @@ dev = [
 [tool.ruff]
 line-length = 88
 target-version = "py311"
+# Les fichiers générés par Alembic ne respectent pas nos règles docstring
+# et import-sort (template fourni par Alembic). On les exclut plutôt que
+# de patcher chaque migration à la main.
+extend-exclude = ["app_api/alembic/versions", "app_api/alembic/env.py"]
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "D"] # Erreurs, Warnings, Pyflakes, Isort, Docstrings

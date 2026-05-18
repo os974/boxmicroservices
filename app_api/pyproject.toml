@@ -12,6 +12,7 @@ dependencies = [
     "uvicorn>=0.41.0",
     "python-dotenv>=1.0.1",
     "psycopg2-binary>=2.9.10",
+    "alembic>=1.18.4",
 ]
 
 [tool.uv]
@@ -32,6 +33,7 @@ app-api = [
     "uvicorn>=0.41.0",
     "python-dotenv>=1.0.1",
     "psycopg2-binary>=2.9.10",
+    "alembic>=1.18.4",
 ]
 
 [tool.pytest.ini_options]

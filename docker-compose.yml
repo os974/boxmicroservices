@@ -1,7 +1,17 @@
+# Stack de développement local — build des images depuis les sources.
+# Variante prod (pull DockerHub) : docker-compose.prod.yml.
+#
+# Pourquoi des healthchecks + `condition: service_healthy` :
+# `depends_on` simple n'attend QUE le démarrage du process, pas la
+# disponibilité réelle du service. Postgres met ~2-5s à accepter les
+# connexions ; sans healthcheck, l'API peut tenter de se connecter
+# trop tôt et planter au premier request.
+
 services:
   db:
     image: postgres:15
     container_name: postgres-db
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -10,11 +20,22 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - api-db
+    healthcheck:
+      # `pg_isready` est l'outil officiel Postgres pour tester si le
+      # serveur accepte les connexions. -U/-d ciblent la même base que
+      # l'application — couvre aussi le cas où Postgres est up mais la
+      # BDD applicative pas encore initialisée.
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   api:
     build:
       context: ./app_api
     container_name: fastapi-api
+    restart: unless-stopped
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -23,21 +44,34 @@ services:
       - POSTGRES_HOST=db
       - PYTHONPATH=.
     depends_on:
-      - db
+      db:
+        # Attend que `pg_isready` retourne OK avant de démarrer.
+        condition: service_healthy
     networks:
       - api-db
       - front-api
     ports:
       - "8000:8000"
+    healthcheck:
+      # Endpoint racine `/` — ne touche pas à la BDD donc reste "up" même
+      # si Postgres a un hoquet temporaire (utile pour observer ce cas
+      # plutôt que cascade-failure les redémarrages).
+      test: ["CMD-SHELL", "python -c \"import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/').status==200 else 1)\""]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
   front:
     build:
       context: ./app_front
     container_name: streamlit-front
+    restart: unless-stopped
     environment:
       - API_HOST=api
     depends_on:
-      - api
+      api:
+        condition: service_healthy
     networks:
       - front-api
     ports:

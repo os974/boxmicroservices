@@ -26,6 +26,12 @@ htmlcov/
 
 # Base de données locale (SQLite)
 app_api/data/*.db
+tests/*.sqlite
+tests/*.db
+
+# Outils IA / assistants
+CLAUDE.md
+.claude/
 
 # Documentation Sphinx
 docs/build/
